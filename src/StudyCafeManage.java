@@ -2,9 +2,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-class Input {
-    static Scanner in = new Scanner(System.in);
-}
+//class Input {
+//    static Scanner in = new Scanner(System.in);
+//}
 class Member {
     String phoneNum, PIN_PASS_WORD, IN_TIME, EXIT_TIME, job;
     boolean state;
@@ -38,24 +38,25 @@ class Seat {
 }
 
 public class StudyCafeManage {
+    static Scanner in = new Scanner(System.in);
     static void adminM() {
         System.out.println("\t\t===== 관리자 모드 진입 =====");
         boolean menu = true;
         while(menu) {
             System.out.print("1번 : 룸의 좌석 수 설정\n2번 : 채워진 좌석 조회\n3번 : 월 단위 통계 조회\n4번 : 회원 리스트 관리\n5번 : 메인메뉴\n입력 : ");
-            int accessMode = Input.in.nextInt();
+            int accessMode = in.nextInt();
             switch (accessMode) {
                 case 1 -> {
                     System.out.println("\t\t===== 좌석 설정 =====");
                     System.out.print("좌석 수를 입력하세요 >> ");
-                    int seatNum = Input.in.nextInt();
+                    int seatNum = in.nextInt();
                     for (int i = 0; i < Room.COVID_SEAT.length; i++) {
                         Room.COVID_SEAT[i] = new int[seatNum];
                     }
                 }
                 case 2 -> {
-                    System.out.println("\t\t===== 좌석 조회 =====");
-                    if (true ) { //조건 달기
+                    if (Room.COVID_SEAT[0] != null) { //조건 달기
+                        System.out.println("\t\t===== 좌석 조회 =====");
                         int seatNumber = 1;
                         for (int i = 0; i < Room.COVID_SEAT.length; i++) {
                             for (int j = 0; j < Room.COVID_SEAT[i].length; j++) {
@@ -78,7 +79,7 @@ public class StudyCafeManage {
                         System.out.println();
                         while(true) {
                             System.out.print("몇번째 회원을 조회하시겠습니까? : ");
-                            int index = Input.in.nextInt() - 1;
+                            int index = in.nextInt() - 1;
 
                             if(index < 0 || index > Manage.memberList.size()) {
                                 System.out.println("종료합니다.\n");
@@ -109,16 +110,16 @@ public class StudyCafeManage {
     }
     static void memberAccessM() {
         System.out.print("ID(핸드폰 번호) : ");
-        String phone = Input.in.next();
+        String phone = in.next();
         System.out.print("비밀번호 : ");
-        String passWord = Input.in.next();
+        String passWord = in.next();
         JobList[] jobList = JobList.values();
         System.out.println("다음 직업중 해당하는 것을 골라주세요.");
         for (int i = 0 ; i < jobList.length; i++) {
             System.out.printf("%d번 : %s \n", (i+1), jobList[i]);
         }
         System.out.print("직업 : ");
-        int job = Input.in.nextInt();
+        int job = in.nextInt();
         String jobs = null;
         switch (job) {
             case 1 -> jobs = "중학생";
@@ -144,9 +145,9 @@ public class StudyCafeManage {
     static void memberExitM() {
         System.out.println("\t\t===== 퇴실 =====");
         System.out.print("퇴실할 아이디 입력 : ");
-        String logOutID = Input.in.next();
+        String logOutID = in.next();
         System.out.print("비밀번호 입력 : ");
-        String logOutPass = Input.in.next();
+        String logOutPass = in.next();
         for (int i = 0; i < Manage.memberList.size(); i++) {
             if(Manage.memberList.get(i).phoneNum.equals(logOutID) && Manage.memberList.get(i).PIN_PASS_WORD.equals(logOutPass)) {
                 Manage.memberList.remove(i);
