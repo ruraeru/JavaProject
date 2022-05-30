@@ -184,11 +184,12 @@ public class StudyCafeManage {
         String logOutID = in.next();
         System.out.print("비밀번호 입력 : ");
         String logOutPass = in.next();
-        for (int i = 0; i < Manage.memberList.size(); i++) {
-            if(Manage.memberList.get(i).phoneNum.equals(logOutID) && Manage.memberList.get(i).PIN_PASS_WORD.equals(logOutPass)) {
-                Manage.memberList.remove(i);
-            }
-        }
+        Manage.memberList.removeIf(list -> list.phoneNum.equals(logOutID) && list.PIN_PASS_WORD.equals(logOutPass));
+//        for (int i = 0; i < Manage.memberList.size(); i++) {
+//            if(Manage.memberList.get(i).phoneNum.equals(logOutID) && Manage.memberList.get(i).PIN_PASS_WORD.equals(logOutPass)) {
+//                Manage.memberList.remove(i);
+//            }
+//        }
         //회원 퇴장 모드
         //남은 시간 차감
         //시간을 초과한 경우 추가 요금 부가됨.
