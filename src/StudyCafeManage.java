@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -5,13 +6,17 @@ class Member {
     String phoneNum, PIN_PASS_WORD, IN_TIME, EXIT_TIME, job;
     boolean state;
     int SeatNum, age;
+    int year,month, day;
     String AccessType;
     String USE_TIME;
-    public Member(String phoneNum, String PIN_PASS_WORD, int age,String job) {
+    public Member(String phoneNum, String PIN_PASS_WORD, int age, String job, int... time) {
         this.phoneNum = phoneNum;
         this.PIN_PASS_WORD = PIN_PASS_WORD;
         this.job = job;
         this.age = age;
+        this.year = time[0];
+        this.month = time[1];
+        this.day = time[2];
         if (age >= 10 && age <= 80) {
             Manage.ages[(age/10)-1]++;
             switch (job) {
@@ -24,6 +29,7 @@ class Member {
         }
     }
     public void Print() {
+        System.out.printf("\t가입 날짜 : %d년 %d월 %d일\n", year, month, day);
         System.out.printf("\tID(핸드폰 번호) : %s\n", phoneNum);
         System.out.printf("\t비밀번호 : %s\n", PIN_PASS_WORD);
         System.out.printf("\t나이 : %d\n", age);
@@ -130,6 +136,7 @@ public class StudyCafeManage {
         //멤버 리스트 관리
     }
     static void memberAccessM() {
+        LocalDate now = LocalDate.now();
         System.out.print("ID(핸드폰 번호) : ");
         String phone = in.next();
         System.out.print("비밀번호 : ");
@@ -150,7 +157,7 @@ public class StudyCafeManage {
             case 4 -> jobs = "직장인";
             case 5 -> jobs = "무직";
         }
-        Manage.memberList.add(new Member(phone, passWord, age, jobs));
+        Manage.memberList.add(new Member(phone, passWord, age, jobs, now.getYear(), now.getMonthValue(), now.getDayOfMonth()));
 
         //유저 모드
         //차감된 시간 및 날짜 알려줌
