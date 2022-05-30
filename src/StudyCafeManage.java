@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 class Input {
@@ -54,17 +55,19 @@ public class StudyCafeManage {
                 }
                 case 2 -> {
                     System.out.println("\t\t===== 좌석 조회 =====");
-                    int seatNumber = 1;
-                    for (int i = 0; i < Room.COVID_SEAT.length; i++) {
-                        for (int j = 0; j < Room.COVID_SEAT[i].length; j++) {
-                            if (Room.COVID_SEAT[i][j] == 0) {
-                                if (seatNumber < 10) {
-                                    System.out.printf("[\s0%d\s]", seatNumber++);
-                                } else System.out.printf("[\s%d\s]", seatNumber++);
+                    if (true ) { //조건 달기
+                        int seatNumber = 1;
+                        for (int i = 0; i < Room.COVID_SEAT.length; i++) {
+                            for (int j = 0; j < Room.COVID_SEAT[i].length; j++) {
+                                if (Room.COVID_SEAT[i][j] == 0) {
+                                    if (seatNumber < 10) {
+                                        System.out.printf("[\s0%d\s]", seatNumber++);
+                                    } else System.out.printf("[\s%d\s]", seatNumber++);
+                                }
                             }
+                            System.out.println();
                         }
-                        System.out.println();
-                    }
+                    } else System.out.println("좌석 수를 먼저 설정해주세요.");
                 }
                 case 3 -> {
                     System.out.println("\t\t===== 통계 조회 =====");
