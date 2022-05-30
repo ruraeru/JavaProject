@@ -5,7 +5,7 @@ import java.util.Scanner;
 class Member {
     String phoneNum, PIN_PASS_WORD, IN_TIME, EXIT_TIME, job;
     boolean state;
-    int SeatNum, age;
+    int SeatNum, age, report;
     int year,month, day;
     String AccessType;
     String USE_TIME;
@@ -33,7 +33,12 @@ class Member {
         System.out.printf("\tID(핸드폰 번호) : %s\n", phoneNum);
         System.out.printf("\t비밀번호 : %s\n", PIN_PASS_WORD);
         System.out.printf("\t나이 : %d\n", age);
-        System.out.printf("\t직업 : %s\n\n", job);
+        System.out.printf("\t직업 : %s\n", job);
+        System.out.printf("\t신고 : %d번\n\n", report);
+    }
+
+    public void Report(int report) {
+        this.report += report;
     }
 }
 
@@ -88,19 +93,21 @@ public class StudyCafeManage {
                     } else System.out.println("좌석 수를 먼저 설정해주세요.");
                 }
                 case 3 -> {
-                    System.out.println("\t\t===== 통계 조회 =====");
-                    System.out.printf("회원수 : %d\n", Manage.memberList.size());
-                    for (int i = 0; i < Manage.ages.length; i++) {
-                        if (Manage.ages[i] != 0) {
-                            System.out.printf("%d대 : %d명\n", (i+1)*10, Manage.ages[i]);
+                    if (Manage.memberList.size() != 0) {
+                        System.out.println("\t\t===== 통계 조회 =====");
+                        System.out.printf("회원수 : %d\n", Manage.memberList.size());
+                        for (int i = 0; i < Manage.ages.length; i++) {
+                            if (Manage.ages[i] != 0) {
+                                System.out.printf("%d대 : %d명\n", (i+1)*10, Manage.ages[i]);
+                            }
                         }
-                    }
-                    System.out.println();
-                    for (int i = 0; i < Manage.jobs.length; i++) {
-                        if (Manage.jobs[i] != 0) {
-                            System.out.printf("%s : %d명\n", Manage.jobList[i], Manage.jobs[i]);
+                        System.out.println();
+                        for (int i = 0; i < Manage.jobs.length; i++) {
+                            if (Manage.jobs[i] != 0) {
+                                System.out.printf("%s : %d명\n", Manage.jobList[i], Manage.jobs[i]);
+                            }
                         }
-                    }
+                    } else System.out.println("가입된 회원이 없습니다.");
                 }
                 case 4 -> {
                     if (Manage.memberList.size() != 0) {
@@ -188,6 +195,12 @@ public class StudyCafeManage {
     }
     static void userReport() {
         System.out.println("신고할 유저의 아이디를 입력하세요.");
+        String report = in.next();
+        for (int i = 0; i < Manage.memberList.size(); i++) {
+            if (Manage.memberList.get(i).phoneNum.equals(report)) {
+                Manage.memberList.get(i).Report(1);
+            }
+        }
     }
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
