@@ -1,30 +1,41 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
-//class Input {
-//    static Scanner in = new Scanner(System.in);
-//}
 class Member {
     String phoneNum, PIN_PASS_WORD, IN_TIME, EXIT_TIME, job;
     boolean state;
-    int SeatNum;
+    int SeatNum, age;
     String AccessType;
     String USE_TIME;
-    public Member(String phoneNum, String PIN_PASS_WORD, String job) {
+    public Member(String phoneNum, String PIN_PASS_WORD, int age,String job) {
         this.phoneNum = phoneNum;
         this.PIN_PASS_WORD = PIN_PASS_WORD;
         this.job = job;
+        this.age = age;
+        if (age >= 10 && age <= 80) {
+            Manage.ages[(age/10)-1]++;
+            switch (job) {
+                case "중학생" -> Manage.jobs[0]++;
+                case "고등학생" -> Manage.jobs[1]++;
+                case "대학생" -> Manage.jobs[2]++;
+                case "직장인" -> Manage.jobs[3]++;
+                case "무직" -> Manage.jobs[4]++;
+            }
+        }
     }
     public void Print() {
         System.out.printf("\tID(핸드폰 번호) : %s\n", phoneNum);
         System.out.printf("\t비밀번호 : %s\n", PIN_PASS_WORD);
+        System.out.printf("\t나이 : %d\n", age);
         System.out.printf("\t직업 : %s\n\n", job);
     }
 }
 
 class Manage {
     public static ArrayList<Member> memberList = new ArrayList<>();
+    public static int[] ages = new int[7];
+    public static JobList[] jobList = JobList.values();
+    public static int[] jobs = new int[jobList.length];
 }
 
 class Room {
@@ -72,6 +83,18 @@ public class StudyCafeManage {
                 }
                 case 3 -> {
                     System.out.println("\t\t===== 통계 조회 =====");
+                    System.out.printf("회원수 : %d\n", Manage.memberList.size());
+                    for (int i = 0; i < Manage.ages.length; i++) {
+                        if (Manage.ages[i] != 0) {
+                            System.out.printf("%d대 : %d명\n", (i+1)*10, Manage.ages[i]);
+                        }
+                    }
+                    System.out.println();
+                    for (int i = 0; i < Manage.jobs.length; i++) {
+                        if (Manage.jobs[i] != 0) {
+                            System.out.printf("%s : %d명\n", Manage.jobList[i], Manage.jobs[i]);
+                        }
+                    }
                 }
                 case 4 -> {
                     if (Manage.memberList.size() != 0) {
@@ -95,9 +118,7 @@ public class StudyCafeManage {
                     System.out.println("메인으로 나갑니다.");
                     menu = false;
                 }
-                default -> {
-                    System.out.println("다시 선택해주세요.");
-                }
+                default -> System.out.println("다시 선택해주세요.");
             }
         }
         //관리자 모드
@@ -113,10 +134,11 @@ public class StudyCafeManage {
         String phone = in.next();
         System.out.print("비밀번호 : ");
         String passWord = in.next();
-        JobList[] jobList = JobList.values();
+        System.out.print("나이 : ");
+        int age = in.nextInt();
         System.out.println("다음 직업중 해당하는 것을 골라주세요.");
-        for (int i = 0 ; i < jobList.length; i++) {
-            System.out.printf("%d번 : %s \n", (i+1), jobList[i]);
+        for (int i = 0 ; i < Manage.jobList.length; i++) {
+            System.out.printf("%d번 : %s \n", (i+1), Manage.jobList[i]);
         }
         System.out.print("직업 : ");
         int job = in.nextInt();
@@ -128,7 +150,7 @@ public class StudyCafeManage {
             case 4 -> jobs = "직장인";
             case 5 -> jobs = "무직";
         }
-        Manage.memberList.add(new Member(phone, passWord, jobs));
+        Manage.memberList.add(new Member(phone, passWord, age, jobs));
 
         //유저 모드
         //차감된 시간 및 날짜 알려줌
@@ -184,5 +206,5 @@ public class StudyCafeManage {
 }
 
 enum JobList {
-    중학생, 고등학생, 대학생, 직장인, 무직;
+    중학생, 고등학생, 대학생, 직장인, 무직
 }
