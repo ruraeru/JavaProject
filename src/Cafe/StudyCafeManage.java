@@ -1,46 +1,8 @@
-import java.time.LocalDate;
+package Cafe;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
-
-class Member {
-    String phoneNum, PIN_PASS_WORD, IN_TIME, EXIT_TIME, job;
-    boolean state;
-    int SeatNum, age, report;
-    int year,month, day;
-    String AccessType;
-    String USE_TIME;
-    public Member(String phoneNum, String PIN_PASS_WORD, int age, String job, int... time) {
-        this.phoneNum = phoneNum;
-        this.PIN_PASS_WORD = PIN_PASS_WORD;
-        this.job = job;
-        this.age = age;
-        this.year = time[0];
-        this.month = time[1];
-        this.day = time[2];
-        if (age >= 10 && age <= 80) {
-            Manage.ages[(age/10)-1]++;
-            switch (job) {
-                case "중학생" -> Manage.jobs[0]++;
-                case "고등학생" -> Manage.jobs[1]++;
-                case "대학생" -> Manage.jobs[2]++;
-                case "직장인" -> Manage.jobs[3]++;
-                case "무직" -> Manage.jobs[4]++;
-            }
-        }
-    }
-    public void Print() {
-        System.out.printf("\t가입 날짜 : %d년 %d월 %d일\n", year, month, day);
-        System.out.printf("\tID(핸드폰 번호) : %s\n", phoneNum);
-        System.out.printf("\t비밀번호 : %s\n", PIN_PASS_WORD);
-        System.out.printf("\t나이 : %d\n", age);
-        System.out.printf("\t직업 : %s\n", job);
-        System.out.printf("\t신고 : %d번\n\n", report);
-    }
-
-    public void Report(int report) {
-        this.report += report;
-    }
-}
 
 class Manage {
     public static ArrayList<Member> memberList = new ArrayList<>();
@@ -65,7 +27,7 @@ public class StudyCafeManage {
         System.out.println("\t\t===== 관리자 모드 진입 =====");
         boolean menu = true;
         while(menu) {
-            System.out.print("1번 : 룸의 좌석 수 설정\n2번 : 채워진 좌석 조회\n3번 : 월 단위 통계 조회\n4번 : 회원 리스트 관리\n5번 : 메인메뉴\n입력 : ");
+            System.out.print("1번 : 룸의 좌석 수 설정\n2번 : 채워진 좌석 조회\n3번 : 월 단위 통계 조회\n4번 : 회원 리스트 관리\n5번 : 신고 내역\n6번 : 메인메뉴\n입력 : ");
             int accessMode = in.nextInt();
             switch (accessMode) {
                 case 1 -> {
@@ -121,17 +83,27 @@ public class StudyCafeManage {
                                 System.out.println("종료합니다.\n");
                                 break;
                             } else {
-                                System.out.printf("\n====== \"%s\"님의 정보 ======\n", Manage.memberList.get(index).phoneNum);
+                                System.out.printf("\n====== \"%s\"님의 정보 ======\n", Manage.memberList.get(index).getPhoneNum());
                                 Manage.memberList.get(index).Print();
                             }
                         }
                     } else System.out.println("등록된 회원이 없습니다.");
                 }
                 case 5 -> {
+                    //신고 내역 보기
+                    System.out.println("\t\t===== 신고 내역 =====");
+                    for (int i = 0; i < Manage.memberList.size(); i++) {
+                        if (Manage.memberList.get(i).getReportCnt() != 0) {
+                            System.out.printf("%s님의 신고\n", Manage.memberList.get(i).getPhoneNum());
+                            System.out.printf("신고 누적 : %d\n", Manage.memberList.get(i).getReportCnt());
+                            System.out.printf("사유 : %s\n", Manage.memberList.get(i).getComment());
+                        }
+                    }
+                }
+                case 6 -> {
                     System.out.println("메인으로 나갑니다.");
                     menu = false;
                 }
-                default -> System.out.println("다시 선택해주세요.");
             }
         }
         //관리자 모드
@@ -143,7 +115,7 @@ public class StudyCafeManage {
         //멤버 리스트 관리
     }
     static void memberAccessM() {
-        LocalDate now = LocalDate.now();
+        LocalDateTime t = LocalDateTime.now();
         System.out.print("ID(핸드폰 번호) : ");
         String phone = in.next();
         System.out.print("비밀번호 : ");
@@ -164,7 +136,7 @@ public class StudyCafeManage {
             case 4 -> jobs = "직장인";
             case 5 -> jobs = "무직";
         }
-        Manage.memberList.add(new Member(phone, passWord, age, jobs, now.getYear(), now.getMonthValue(), now.getDayOfMonth()));
+        Manage.memberList.add(new Member(phone, passWord, age, jobs, t.getYear(), t.getMonthValue(), t.getDayOfMonth(), t.getHour(), t.getMinute(), t.getSecond()));
 
         //유저 모드
         //차감된 시간 및 날짜 알려줌
@@ -175,7 +147,7 @@ public class StudyCafeManage {
     static void showMemberList() {
         System.out.println("\t\t===== 회원 리스트 =====");
         for (int i = 0; i < Manage.memberList.size(); i++) {
-            System.out.printf("%d번 : \"%s\"님\n", i + 1, Manage.memberList.get(i).phoneNum);
+            System.out.printf("%d번 : \"%s\"님\n", i + 1, Manage.memberList.get(i).getPhoneNum());
         }
     }
     static void memberExitM() {
@@ -184,10 +156,10 @@ public class StudyCafeManage {
         String logOutID = in.next();
         System.out.print("비밀번호 입력 : ");
         String logOutPass = in.next();
-        Manage.memberList.removeIf(list -> list.phoneNum.equals(logOutID) && list.PIN_PASS_WORD.equals(logOutPass));
-//        for (int i = 0; i < Manage.memberList.size(); i++) {
-//            if(Manage.memberList.get(i).phoneNum.equals(logOutID) && Manage.memberList.get(i).PIN_PASS_WORD.equals(logOutPass)) {
-//                Manage.memberList.remove(i);
+        Manage.memberList.removeIf(list -> list.getPhoneNum().equals(logOutID) && list.getPIN_PASS_WORD().equals(logOutPass));
+//        for (int i = 0; i < Cafe.Manage.memberList.size(); i++) {
+//            if(Cafe.Manage.memberList.get(i).getPhoneNum().equals(logOutID) && Cafe.Manage.memberList.get(i).getPIN_PASS_WORD().equals(logOutPass)) {
+//                Cafe.Manage.memberList.remove(i);
 //            }
 //        }
         //회원 퇴장 모드
@@ -195,11 +167,17 @@ public class StudyCafeManage {
         //시간을 초과한 경우 추가 요금 부가됨.
     }
     static void userReport() {
-        System.out.println("신고할 유저의 아이디를 입력하세요.");
-        String report = in.next();
+        System.out.print("신고할 유저의 아이디를 입력하세요 : ");
+        String reportID = in.next();
+        String[] reportSelect = new String[]{"소음", "취식", "관리자 빨리 조치 요함"};
+        for (int i = 0; i < reportSelect.length; i++) {
+            System.out.printf("%d번 : %s\n", i+1, reportSelect[i]);
+        }
+        System.out.print("신고할 사유를 선택하세요 : ");
+        int comment = in.nextInt() - 1;
         for (int i = 0; i < Manage.memberList.size(); i++) {
-            if (Manage.memberList.get(i).phoneNum.equals(report)) {
-                Manage.memberList.get(i).Report(1);
+            if (Manage.memberList.get(i).getPhoneNum().equals(reportID)) {
+                Manage.memberList.get(i).Report(1, reportSelect[comment]);
             }
         }
     }
