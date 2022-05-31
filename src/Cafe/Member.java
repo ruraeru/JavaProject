@@ -4,7 +4,6 @@ public class Member {
     private String IN_TIME, EXIT_TIME, USE_TIME, AccessType;
     private int SeatNum, reportCnt;
     private String comment = "";
-
     private final String phoneNum, PIN_PASS_WORD, job;
     private final int age;
     int year,month, day, hour, min, sec;

@@ -9,6 +9,8 @@ class Manage {
     public static int[] ages = new int[7];
     public static JobList[] jobList = JobList.values();
     public static int[] jobs = new int[jobList.length];
+    public static String[] ticket = new String[]{ "1시간", "3시간", "5시간", "8시간", "1일", "야간", "무제한" };
+    // "2주", "4주", "8주", "12주"
 }
 
 class Room {
@@ -122,9 +124,15 @@ public class StudyCafeManage {
         String passWord = in.next();
         System.out.print("나이 : ");
         int age = in.nextInt();
+        System.out.println("이용권을 선택해주세요.");
+        for (int i = 0; i < Manage.ticket.length; i++) {
+            System.out.printf("%d번 : %s\n", (i+1), Manage.ticket[i]);
+        }
+        System.out.print("이용권 선택 : ");
+        int ticketSelect = in.nextInt();
         System.out.println("다음 직업중 해당하는 것을 골라주세요.");
         for (int i = 0 ; i < Manage.jobList.length; i++) {
-            System.out.printf("%d번 : %s \n", (i+1), Manage.jobList[i]);
+            System.out.printf("%d번 : %s\n", (i+1), Manage.jobList[i]);
         }
         System.out.print("직업 : ");
         int job = in.nextInt();
