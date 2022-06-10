@@ -4,23 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-class Manage {
-    public static ArrayList<Member> memberList = new ArrayList<>();
-    public static int[] ages = new int[7];
-    public static JobList[] jobList = JobList.values();
-    public static int[] jobs = new int[jobList.length];
-    public static String[] ticket = new String[]{ "1시간", "3시간", "5시간", "8시간", "1일", "야간", "무제한" };
-    // "2주", "4주", "8주", "12주"
-}
-
-class Room {
-    public static int[][] COVID_SEAT = new int[5][];
-    public static int[][] SEAT = new int[10][];
-    public static int[][] GROUP_ROOM = new int[10][];
-}
-
 class Seat {
-    String seatId;
+    int seatId;
 }
 
 public class StudyCafeManage {
@@ -37,24 +22,12 @@ public class StudyCafeManage {
                     System.out.print("좌석 수를 입력하세요 >> ");
                     int seatNum = in.nextInt();
                     for (int i = 0; i < Room.COVID_SEAT.length; i++) {
-                        Room.COVID_SEAT[i] = new int[seatNum];
+                        Room.COVID_SEAT[i] = new boolean[seatNum];
                     }
+                    Room.GROUP_ROOM = new boolean[seatNum];
                 }
                 case 2 -> {
-                    if (Room.COVID_SEAT[0] != null) { //조건 달기
-                        System.out.println("\t\t===== 좌석 조회 =====");
-                        int seatNumber = 1;
-                        for (int i = 0; i < Room.COVID_SEAT.length; i++) {
-                            for (int j = 0; j < Room.COVID_SEAT[i].length; j++) {
-                                if (Room.COVID_SEAT[i][j] == 0) {
-                                    if (seatNumber < 10) {
-                                        System.out.printf("[\s0%d\s]", seatNumber++);
-                                    } else System.out.printf("[\s%d\s]", seatNumber++);
-                                }
-                            }
-                            System.out.println();
-                        }
-                    } else System.out.println("좌석 수를 먼저 설정해주세요.");
+                    showSeatList();
                 }
                 case 3 -> {
                     if (Manage.memberList.size() != 0) {
@@ -118,39 +91,114 @@ public class StudyCafeManage {
     }
     static void memberAccessM() {
         LocalDateTime t = LocalDateTime.now();
+        boolean signUp = true;
+        boolean signIn = false;
+        boolean state;
+        int seat = 0;
         System.out.print("ID(핸드폰 번호) : ");
         String phone = in.next();
-        System.out.print("비밀번호 : ");
-        String passWord = in.next();
-        System.out.print("나이 : ");
-        int age = in.nextInt();
-        System.out.println("이용권을 선택해주세요.");
-        for (int i = 0; i < Manage.ticket.length; i++) {
-            System.out.printf("%d번 : %s\n", (i+1), Manage.ticket[i]);
+        for (int i = 0; i < Manage.memberList.size(); i++) {
+            if (Manage.memberList.get(i).getPhoneNum().equals(phone)) {
+                signUp = false;
+                signIn = true;
+            }
         }
-        System.out.print("이용권 선택 : ");
-        int ticketSelect = in.nextInt();
-        System.out.println("다음 직업중 해당하는 것을 골라주세요.");
-        for (int i = 0 ; i < Manage.jobList.length; i++) {
-            System.out.printf("%d번 : %s\n", (i+1), Manage.jobList[i]);
+        if (signUp) {
+            System.out.print("비밀번호 : ");
+            String passWord = in.next();
+            System.out.print("나이 : ");
+            int age = in.nextInt();
+            System.out.println("다음 직업중 해당하는 것을 골라주세요.");
+            for (int i = 0 ; i < Manage.jobList.length; i++) {
+                System.out.printf("%d번 : %s\n", (i+1), Manage.jobList[i]);
+            }
+            System.out.print("직업 : ");
+            int job = in.nextInt();
+            String jobs = null;
+            switch (job) {
+                case 1 -> jobs = "중학생";
+                case 2 -> jobs = "고등학생";
+                case 3 -> jobs = "대학생";
+                case 4 -> jobs = "직장인";
+                case 5 -> jobs = "무직";
+            }
+            Manage.memberList.add(new Member(phone, passWord, age, jobs,
+                    t.getYear(), t.getMonthValue(), t.getDayOfMonth()));
+            //, t.getHour(), t.getMinute(), t.getSecond())
         }
-        System.out.print("직업 : ");
-        int job = in.nextInt();
-        String jobs = null;
-        switch (job) {
-            case 1 -> jobs = "중학생";
-            case 2 -> jobs = "고등학생";
-            case 3 -> jobs = "대학생";
-            case 4 -> jobs = "직장인";
-            case 5 -> jobs = "무직";
+
+        if (signIn) {
+            int ticket = 0;
+            int ticketSelect = 0;
+            System.out.println("이용권을 선택해주세요.");
+
+            System.out.println("당일권 : 1번\n시간권 : 2번\n기간권 : 3번");
+            System.out.print("입력>>> ");
+            ticket = in.nextInt() + 1;
+            if (ticket > 3 || ticket < 1) {
+                ticket = 0;
+                System.out.println("이용권을 다시 선택해주세요.");
+                System.out.print("입력>>> ");
+                ticket = in.nextInt() + 1;
+            }
+            for (int j = 0; j < Manage.ticket[ticket].length; j++) {
+                System.out.printf("%d번 : %s\n", (j+1),Manage.ticket[ticket][j]);
+            }
+            System.out.print("입력>>> ");
+            ticketSelect = in.nextInt() + 1;
+            if (ticketSelect > 3 || ticketSelect < 1) {
+                ticketSelect = 0;
+                System.out.println("이용권을 다시 선택해주세요.");
+                System.out.print("입력>>> ");
+                ticketSelect = in.nextInt() + 1;
+            }
+
+            showSeatList();
+            state = true;
+            Manage.usingMemberList.add(new Member(phone, state, Manage.ticket[ticket][ticketSelect], seat));
         }
-        Manage.memberList.add(new Member(phone, passWord, age, jobs, t.getYear(), t.getMonthValue(), t.getDayOfMonth(), t.getHour(), t.getMinute(), t.getSecond()));
+
 
         //유저 모드
         //차감된 시간 및 날짜 알려줌
         //사용 가능한 좌석 배열로 보여줌
         //좌석 배정시 원하는 종류의 좌석이 남아있는 경우 좌석 번호가 배정
         //좌석이 만석인 경우 입장 X
+    }
+    static void showSeatList() {
+        int seatNum = 1;
+        System.out.println("  ===== COVID 좌석 조회 =====");
+        for (int i = 0 ; i < Room.COVID_SEAT.length; i++) {
+            for (int j = 0 ; j < Room.COVID_SEAT[i].length; j++) {
+                if (seatNum < 10) {
+                    System.out.printf(" [\s0%d\s]", seatNum++);
+                } else System.out.printf(" [\s%d\s]", seatNum++);
+            }
+            System.out.println();
+        }
+        System.out.println();
+        System.out.println("\t\t\t\t===== 일반 좌석 조회 =====");
+        for (int i = 0 ; i < Room.SEAT.length; i++) {
+            for (int j = 0 ; j < Room.SEAT[i].length; j++) {
+                if (seatNum < 10) {
+                    System.out.printf(" [\s0%d\s]", seatNum++);
+                } else System.out.printf(" [\s%d\s]", seatNum++);
+            }
+            System.out.println();
+        }
+        System.out.println();
+        System.out.println("===== 스터디룸 좌석 조회 =====");
+        for (int i = 0; i < Room.GROUP_ROOM.length; i++) {
+            if (i != 0) {
+                if (i % 3 == 0) {
+                    System.out.println();
+                }
+            }
+            if (seatNum < 10) {
+                System.out.printf(" [\s0%d\s]", seatNum++);
+            } else System.out.printf(" [\s%d\s]", seatNum++);
+        }
+        System.out.println();
     }
     static void showMemberList() {
         System.out.println("\t\t===== 회원 리스트 =====");
@@ -206,6 +254,9 @@ public class StudyCafeManage {
                 case 5 -> {
                     System.out.println("종료");
                     return;
+                }
+                case 6 -> {
+                    showSeatList();
                 }
             }
         }
