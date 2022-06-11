@@ -2,12 +2,22 @@ package Cafe;
 
 public class Member {
     private String IN_TIME, EXIT_TIME, USE_TIME, AccessType;
-    private int SeatNum, reportCnt;
+    private int reportCnt;
+    private String seatNum;
     private String comment = "";
     private String phoneNum, PIN_PASS_WORD, job;
     private int age;
     int year,month, day, hour, min, sec;
-    boolean state;
+    String state;
+    public String getSeatNum() {
+        return seatNum;
+    }
+    public void setUSE_TIME(String USE_TIME) {
+        this.USE_TIME = USE_TIME;
+    }
+    public void setEXIT_TIME(String EXIT_TIME) {
+        this.EXIT_TIME = EXIT_TIME;
+    }
     public String getPhoneNum() {
         return phoneNum;
     }
@@ -22,12 +32,11 @@ public class Member {
     public String getComment() {
         return comment;
     }
-
     public int getAge() {
         return age;
     }
 
-    public boolean getState() {
+    public String getState() {
         return state;
     }
     public Member(String phoneNum, String PIN_PASS_WORD, int age, String job, int... time) {
@@ -50,10 +59,13 @@ public class Member {
         }
     }
 
-    public Member(String phoneNum, boolean state, String ticket, int seat) {
+    public Member(String phoneNum, String state, String ticket, String seat, String IN_TIME) {
         this.phoneNum = phoneNum;
         this.state = state;
-        this.SeatNum = seat;
+        this.seatNum = seat;
+        this.IN_TIME = IN_TIME;
+        System.out.println("아이디 : " + phoneNum + " 상태 : " + state + " 입장시간 : " + IN_TIME);
+        System.out.printf("%s 추가\n", ticket);
     }
 
     public void Print() {
@@ -66,10 +78,6 @@ public class Member {
         if (!comment.equals("")) {
             System.out.printf("\t신고 사유 : %s\n\n", comment);
         }
-    }
-
-    public void UsingMember() {
-
     }
 
     public void Report(int reportCnt, String comment) {
