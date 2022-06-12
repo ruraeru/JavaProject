@@ -1,12 +1,7 @@
 package Cafe;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Scanner;
-
-class Seat {
-    int seatId;
-}
 
 public class StudyCafeManage {
     static Scanner in = new Scanner(System.in);
@@ -24,18 +19,13 @@ public class StudyCafeManage {
                         System.out.println("\t\t===== 좌석 설정 =====");
                         System.out.print("좌석 수를 입력하세요 >> ");
                         int seatNum = in.nextInt();
-                 /*   for (int i = 0; i < Room.COVID_SEAT.length; i++) {
-                        Room.COVID_SEAT[i] = new boolean[seatNum];
-                    }*/
                         Room.GROUP_ROOM = new int[seatNum];
                         int index = 1;
                         for (int i = 0; i < Room.GROUP_ROOM.length; i++) {
                             Room.GROUP_ROOM[i] = index++;
                         }
                     }
-                    case 2 -> {
-                        showSeatList();
-                    }
+                    case 2 -> showSeatList();
                     case 3 -> {
                         if (Manage.memberList.size() != 0) {
                             System.out.println("\t\t===== 통계 조회 =====");
@@ -135,6 +125,7 @@ public class StudyCafeManage {
             if (Manage.memberList.get(i).getPhoneNum().equals(phone)) {
                 signUp = false;
                 signIn = true;
+                break;
             }
         }
         if (signUp) {
@@ -158,7 +149,6 @@ public class StudyCafeManage {
             }
             Manage.memberList.add(new Member(phone, passWord, age, jobs,
                     t.getYear(), t.getMonthValue(), t.getDayOfMonth()));
-            //, t.getHour(), t.getMinute(), t.getSecond())
         }
 
         if (signIn) {
@@ -177,7 +167,6 @@ public class StudyCafeManage {
             }
 
             if (ticket > 3 || ticket < 0) {
-                ticket = 0;
                 System.out.println("이용권을 다시 선택해주세요.");
                 System.out.print("입력>>> ");
                 ticket = in.nextInt() - 1;
@@ -311,10 +300,9 @@ public class StudyCafeManage {
             }
             seat = seat + 1;
 
-            String memberSeat = seatType + " " + seat;
             int month = t.getMonthValue(), day = t.getDayOfMonth(),hour = t.getHour(), min = t.getMinute();
             String IN_TIME = String.valueOf(month) + "월 " + String.valueOf(day) + "일 "+ String.valueOf(t.getHour()) + "시 " + String.valueOf(t.getMinute()) + "분";
-            Manage.usingMemberList.add(new Member(phone, "입장", ticketCate, Manage.ticket[ticket][ticketSelect], memberSeat, IN_TIME, month , day, hour, min));
+            Manage.usingMemberList.add(new Member(phone, "입장", ticketCate, Manage.ticket[ticket][ticketSelect], seatType, seat, IN_TIME, month , day, hour, min));
         }
 
 
@@ -357,10 +345,8 @@ public class StudyCafeManage {
         }
         System.out.println("===== 스터디룸 좌석 =====");
         for (int i = 0; i < Room.GROUP_ROOM.length; i++) {
-            if (i != 0) {
-                if (Room.GROUP_ROOM[i] % 3 == 1) {
-                    System.out.println();
-                }
+            if (Room.GROUP_ROOM[i] % 3 == 1) {
+                System.out.println();
             }
             if (Room.GROUP_ROOM[i] < 10) {
                 if (Room.GROUP_ROOM[i] == 0) {
@@ -393,20 +379,21 @@ public class StudyCafeManage {
             }
         }
     }
-    static void memberExitM() {
-        LocalDateTime t = LocalDateTime.now();
-        System.out.println("\t\t===== 퇴실 =====");
-        System.out.print("퇴실할 아이디 입력 : ");
-        String logOutID = in.next();
-   /*     System.out.print("비밀번호 입력 : ");
-        String logOutPass = in.next();*/
-        /*Manage.memberList.removeIf(list -> list.getPhoneNum().equals(logOutID) && list.getPIN_PASS_WORD().equals(logOutPass));*/
-        /*Manage.usingMemberList.removeIf(list -> list.getPhoneNum().equals(logOutID) && list.getPIN_PASS_WORD().equals(logOutPass));*/
+    /*     System.out.print("비밀번호 입력 : ");
+     String logOutPass = in.next();*/
+    /*Manage.memberList.removeIf(list -> list.getPhoneNum().equals(logOutID) && list.getPIN_PASS_WORD().equals(logOutPass));*/
+    /*Manage.usingMemberList.removeIf(list -> list.getPhoneNum().equals(logOutID) && list.getPIN_PASS_WORD().equals(logOutPass));*/
 //        for (int i = 0; i < Cafe.Manage.memberList.size(); i++) {
 //            if(Cafe.Manage.memberList.get(i).getPhoneNum().equals(logOutID) && Cafe.Manage.memberList.get(i).getPIN_PASS_WORD().equals(logOutPass)) {
 //                Cafe.Manage.memberList.remove(i);
 //            }
 //        }
+    static void memberExitM() {
+        LocalDateTime t = LocalDateTime.now();
+        System.out.println("\t\t===== 퇴실 =====");
+        System.out.print("퇴실할 아이디 입력 : ");
+        String logOutID = in.next();
+
         System.out.print("사용 시간을 입력해주세요>>> ");
         int USE_TIME = in.nextInt();
         String EXIT_TIME = String.valueOf(t.getMonthValue()) + "월 "+ String.valueOf(t.getDayOfMonth()) + "일 " + String.valueOf(t.getHour()) + "시 " + String.valueOf(t.getMinute()) + "분";
@@ -420,6 +407,52 @@ public class StudyCafeManage {
                 }
                 if (Manage.usingMemberList.get(i).getREMAIN_TIME() - USE_TIME < 0) {
                     System.out.printf("시간을 %d만큼 초과하셨습니다.\n", (USE_TIME - Manage.usingMemberList.get(i).getREMAIN_TIME()));
+                }
+            }
+        }
+        for (int i = 0; i < Manage.usingMemberList.size(); i++) {
+            if (Manage.usingMemberList.get(i).getPhoneNum().equals(logOutID)) {
+                int seatNum = Manage.usingMemberList.get(i).getSeat();
+                int index = seatNum - 1;
+                switch (Manage.usingMemberList.get(i).getSeatType()) {
+                    case "스터디룸" -> {
+                        Room.GROUP_ROOM[index] = seatNum;
+                    }
+                    case "일반석" -> {
+                        if (seatNum <= 5) {
+                            Room.SEAT[0][index] = seatNum;
+                        }
+                        else if(seatNum <= 10) {
+                            Room.SEAT[1][index] = seatNum;
+                        }
+                        else if(seatNum <= 15) {
+                            Room.SEAT[2][index] = seatNum;
+                        }
+                        else if(seatNum <= 20) {
+                            Room.SEAT[3][index] = seatNum;
+                        }
+                        else if(seatNum <= 25) {
+                            Room.SEAT[4][index] = seatNum;
+                        }
+
+                    }
+                    case "칸막이석" -> {
+                        if (seatNum <= 5) {
+                            Room.COVID_SEAT[0][index] = seatNum;
+                        }
+                        else if(seatNum <= 10) {
+                            Room.COVID_SEAT[1][index] = seatNum;
+                        }
+                        else if(seatNum <= 15) {
+                            Room.COVID_SEAT[2][index] = seatNum;
+                        }
+                        else if(seatNum <= 20) {
+                            Room.COVID_SEAT[3][index] = seatNum;
+                        }
+                        else if(seatNum <= 25) {
+                            Room.COVID_SEAT[4][index] = seatNum;
+                        }
+                    }
                 }
             }
         }
@@ -469,14 +502,11 @@ public class StudyCafeManage {
                 case 3 -> memberOutM();
                 case 4 -> memberExitM();
                 case 5 -> userReport();
-                case 6 -> {
-                    showSeatList();
-                }
+                case 6 -> showSeatList();
                 case 7 -> {
                     System.out.println("종료");
                     return;
                 }
-
             }
         }
     }

@@ -2,10 +2,11 @@ package Cafe;
 
 public class Member {
     private String IN_TIME, EXIT_TIME, AccessType;
+    private String seatType;
     private int USE_TIME;
     private int REMAIN_TIME;
     private int reportCnt;
-    private String seatNum;
+    private int seatNum;
     private String comment = "";
     private String phoneNum, PIN_PASS_WORD, job;
     private int age;
@@ -21,7 +22,13 @@ public class Member {
         return IN_TIME;
     }
     public String getSeatNum() {
+        return seatType + String.valueOf(seatNum);
+    }
+    public int getSeat() {
         return seatNum;
+    }
+    public String getSeatType() {
+        return seatType;
     }
     public void setUSE_TIME(int USE_TIME) {
         this.USE_TIME += USE_TIME;
@@ -71,21 +78,18 @@ public class Member {
     }
 
     //사용중인 유저
-    public Member(String phoneNum, String state, String ticket, int REMAIN_TIME, String seat, String IN_TIME,int month, int day ,int hour, int min) {
+    public Member(String phoneNum, String state, String ticket, int REMAIN_TIME, String seatType, int seat, String IN_TIME,int month, int day ,int hour, int min) {
         this.phoneNum = phoneNum;
         this.AccessType = ticket;
         switch (REMAIN_TIME) {
-            case 7 :
-            case 28 :
-            case 14 :
-            case 42 : {
+            case 7, 28, 14, 42 -> {
                 this.REMAIN_TIME += REMAIN_TIME * 24;
-                break;
             }
-            default: {
+            default -> {
                 this.REMAIN_TIME += REMAIN_TIME;
             }
         }
+        this.seatType = seatType;
         this.state = state;
         this.seatNum = seat;
         this.IN_TIME = IN_TIME;
