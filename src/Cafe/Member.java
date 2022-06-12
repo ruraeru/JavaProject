@@ -1,7 +1,9 @@
 package Cafe;
 
 public class Member {
-    private String IN_TIME, EXIT_TIME, USE_TIME, AccessType;
+    private String IN_TIME, EXIT_TIME, AccessType;
+    private int USE_TIME;
+    private int REMAIN_TIME;
     private int reportCnt;
     private String seatNum;
     private String comment = "";
@@ -9,11 +11,20 @@ public class Member {
     private int age;
     int year,month, day, hour, min, sec;
     String state;
+    public int getREMAIN_TIME() {
+        return REMAIN_TIME;
+    }
+    public String getAccessType() {
+        return AccessType;
+    }
+    public String getIN_TIME() {
+        return IN_TIME;
+    }
     public String getSeatNum() {
         return seatNum;
     }
-    public void setUSE_TIME(String USE_TIME) {
-        this.USE_TIME = USE_TIME;
+    public void setUSE_TIME(int USE_TIME) {
+        this.USE_TIME += USE_TIME;
     }
     public void setEXIT_TIME(String EXIT_TIME) {
         this.EXIT_TIME = EXIT_TIME;
@@ -21,11 +32,9 @@ public class Member {
     public String getPhoneNum() {
         return phoneNum;
     }
-
     public String getPIN_PASS_WORD() {
         return PIN_PASS_WORD;
     }
-
     public int getReportCnt() {
         return reportCnt;
     }
@@ -35,10 +44,11 @@ public class Member {
     public int getAge() {
         return age;
     }
-
     public String getState() {
         return state;
     }
+
+    //유저리스트
     public Member(String phoneNum, String PIN_PASS_WORD, int age, String job, int... time) {
         this.phoneNum = phoneNum;
         this.PIN_PASS_WORD = PIN_PASS_WORD;
@@ -47,6 +57,7 @@ public class Member {
         this.year = time[0];
         this.month = time[1];
         this.day = time[2];
+        Manage.UserMonth[month-1]++;
         if (age >= 10 && age <= 80) {
             Manage.ages[(age/10)-1]++;
             switch (job) {
@@ -59,13 +70,31 @@ public class Member {
         }
     }
 
-    public Member(String phoneNum, String state, String ticket, String seat, String IN_TIME) {
+    //사용중인 유저
+    public Member(String phoneNum, String state, String ticket, int REMAIN_TIME, String seat, String IN_TIME,int month, int day ,int hour, int min) {
         this.phoneNum = phoneNum;
+        this.AccessType = ticket;
+        switch (REMAIN_TIME) {
+            case 7 :
+            case 28 :
+            case 14 :
+            case 42 : {
+                this.REMAIN_TIME += REMAIN_TIME * 24;
+                break;
+            }
+            default: {
+                this.REMAIN_TIME += REMAIN_TIME;
+            }
+        }
         this.state = state;
         this.seatNum = seat;
         this.IN_TIME = IN_TIME;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.min = min;
         System.out.println("아이디 : " + phoneNum + " 상태 : " + state + " 입장시간 : " + IN_TIME);
-        System.out.printf("%s 추가\n", ticket);
+        System.out.printf("%s %d추가\n", ticket, REMAIN_TIME);
     }
 
     public void Print() {
@@ -78,6 +107,9 @@ public class Member {
         if (!comment.equals("")) {
             System.out.printf("\t신고 사유 : %s\n\n", comment);
         }
+        System.out.println("\t===== 최근 이용 =====");
+        System.out.printf("퇴실 날짜 : %s\n", EXIT_TIME);
+        System.out.printf("이용 시간 : %d시간\n", USE_TIME);
     }
 
     public void Report(int reportCnt, String comment) {
