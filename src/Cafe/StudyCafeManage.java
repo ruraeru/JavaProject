@@ -400,9 +400,9 @@ public class StudyCafeManage {
         for (int i = 0; i < Manage.usingMemberList.size(); i++) {
             if (Manage.usingMemberList.get(i).getPhoneNum().equals(logOutID)) {
                 for (int j = 0 ; j < Manage.memberList.size(); j++) {
-                    if (Manage.memberList.get(i+Manage.memberList.size()-Manage.usingMemberList.size()).getPhoneNum().equals(logOutID)) {
-                        Manage.memberList.get(i+Manage.memberList.size()-Manage.usingMemberList.size()).setUSE_TIME(USE_TIME);
-                        Manage.memberList.get(i+Manage.memberList.size()-Manage.usingMemberList.size()).setEXIT_TIME(EXIT_TIME);
+                    if (Manage.memberList.get(j).getPhoneNum().equals(logOutID)) {
+                        Manage.memberList.get(j).setUSE_TIME(USE_TIME);
+                        Manage.memberList.get(j).setEXIT_TIME(EXIT_TIME);
                     }
                 }
                 if (Manage.usingMemberList.get(i).getREMAIN_TIME() - USE_TIME < 0) {
